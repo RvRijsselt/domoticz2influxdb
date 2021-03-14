@@ -126,7 +126,7 @@ def main():
 		help='inspect database file and print available devices')
 
 	parser.add_argument('--devids', metavar='id', type=int, nargs='*',
-		help='device ids of sensors to process')
+		help='device ids of sensors to process (default: all)')
 	
 	parser.add_argument('--meterquery', metavar='query',
 		default=METER_FORMAT, help='influxdb line query template to \
@@ -159,6 +159,9 @@ def main():
 
 	if (args.devids != None):
 		for tid in args.devids:
+			get_data(args.domoticzdb, tid, meterquery=args.meterquery, multimeterquery=args.multimeterquery, tempquery=args.tempquery, outfile=args.influxfile)
+	else:
+		for tid,v in devices.items():
 			get_data(args.domoticzdb, tid, meterquery=args.meterquery, multimeterquery=args.multimeterquery, tempquery=args.tempquery, outfile=args.influxfile)
 
 
