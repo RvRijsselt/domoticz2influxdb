@@ -18,7 +18,7 @@ return {
 		lasttemperature = { initial = {} },
 		lastsetpoint2 = { initial = {} },
 		-- Influx database URI, including database name
-		influxURI = { initial = 'http://localhost:8086/write?db=DATABASE&precision=s' }
+		influxURI = { initial = 'http://localhost:8086/write?db=smarthome&precision=s' }
 	},
 	execute = function(dz, dev)
 		-- if temp or setpoint changed, push to influxdb
@@ -30,11 +30,19 @@ return {
 			
 			-- Push new temperature to influxdb, both actual and setpoint. Strip 
 			-- device names from spaces for tags in influxdb.
+			-- format v1
+			-- dz.openURL({
+			-- 	url = dz.data.influxURI,
+			-- 	method = 'POST',
+			-- 	postData = "temperature,type=heating,device="..dev.name:gsub("%s+", "")..",subtype=actual value=" .. tonumber(dev.temperature) .. 
+			-- 	"\ntemperature,type=heating,device="..dev.name:gsub("%s+", "")..",subtype=setpoint value=" .. tonumber(dev.setPoint)
+			-- })
+
+			-- format v2
 			dz.openURL({
 				url = dz.data.influxURI,
 				method = 'POST',
-				postData = "temperature,type=heating,device="..dev.name:gsub("%s+", "")..",subtype=actual value=" .. tonumber(dev.temperature) .. 
-				"\ntemperature,type=heating,device="..dev.name:gsub("%s+", "")..",subtype=setpoint value=" .. tonumber(dev.setPoint)
+				postData = "temperaturev2 "..dev.name:gsub("%s+", "").."=" .. tonumber(dev.temperature) .. ","..dev.name:gsub("%s+", "").."_set=" .. tonumber(dev.setPoint)
 			})
 		else
 			dz.log('Device ' .. dev.name .. ' was not changed.')

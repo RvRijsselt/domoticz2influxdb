@@ -55,7 +55,7 @@ def get_data(dbpath, dev_id, meterquery, multimeterquery, tempquery, outfile="./
 	elif (devs[dev_id]['table'] == "Temperature"):
 		get_temperature(dbpath, dev_id, dev_name, tempquery, outfile)
 	else:
-		print ("Meter type not supported")
+		print ("Meter type '{}' not supported: {}".format(devs[dev_id]['table'], devs[dev_id]))
 
 def get_meter(dbpath, dev_id, dev_name, query, outfile="./influx_data.csv"):
 	"""
@@ -120,7 +120,8 @@ def get_temperature(dbpath, dev_id, dev_name, query, outfile="./influx_data.csv"
 
 
 def main():
-	parser = argparse.ArgumentParser(description='Convert domoticz database to influxdb.')
+	parser = argparse.ArgumentParser(description='Convert domoticz database to \
+		influxdb. Supports data types Meter, MultiMeter and Temperature.')
 
 	parser.add_argument('--inspect', action='store_true',
 		help='inspect database file and print available devices')
