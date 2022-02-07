@@ -7,7 +7,7 @@
 # influxdb query strings
 METER_FORMAT="meter,device={dev_name},src=domoticz2influxdb value={value},counter={counter} {epoch_date:d}"
 MULTIMETER_FORMAT="multimeter,device={dev_name},src=domoticz2influxdb counter1={counter1},counter2={counter2},counter3={counter3},counter4={counter4} {epoch_date:d}"
-TEMPERATURE_FORMAT="temperature,type=heating,device={dev_name},subtype=actual,src=domoticz2influxdb temp={temp},setpoint={setpoint} {epoch_date:d}"
+TEMPERATURE_FORMAT="temperature,device={dev_name},src=domoticz2influxdb temp={temp},humidity={humidity},barometer={barometer} {epoch_date:d}"
 
 ### Libraries
 import sqlite3
@@ -108,14 +108,14 @@ def get_temperature(dbpath, dev_id, dev_name, query, outfile="./influx_data.csv"
 
 	t = (dev_id,)
 
-	rows = c.execute("SELECT Temp_Avg,SetPoint_Avg,Date FROM Temperature_Calendar WHERE DeviceRowID = ?", t)
+	rows = c.execute("SELECT Temp_Avg,Humidity,Barometer,Date FROM Temperature_Calendar WHERE DeviceRowID = ?", t)
 	with open(outfile, 'a') as writeFile:
-		for temp, setpoint, date in rows:
+		for temp, humidity, barometer, date in rows:
 			# Example: "18.74, Living Room, 2018-11-14'"
 			# Set date to midday local time by adding 12 hours
 			date_epoch = int(dt.datetime.strptime(date, "%Y-%m-%d").timestamp() + 12*3600) 
 			# Contruct influxdb query
-			row = query.format(dev_name=dev_name.replace(" ",""), temp=temp, setpoint=setpoint, epoch_date=date_epoch)+"\n"
+			row = query.format(dev_name=dev_name.replace(" ",""), temp=temp, humidity=humidity, barometer=barometer, epoch_date=date_epoch)+"\n"
 			writeFile.write(row)
 
 
@@ -141,7 +141,7 @@ def main():
 	parser.add_argument('--tempquery', metavar='query',
 		default=TEMPERATURE_FORMAT, help='influxdb line query template to \
 		format temperature data. Available variables: dev_name, temp, \
-		setpoint, epoch_date')
+		humidity, barometer, epoch_date')
 
 	parser.add_argument('--influxfile', type=str, metavar='path', 
 		default='./influx_data.csv', help='file to store influxdb queries to')
