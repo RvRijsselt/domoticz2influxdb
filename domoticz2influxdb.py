@@ -67,7 +67,7 @@ def get_meter(dbpath, dev_id, dev_name, query, outfile="./influx_data.csv"):
 	t = (dev_id,)
 
 	rows = c.execute("SELECT Value,Counter,Date FROM Meter_Calendar WHERE DeviceRowID = ?", t)
-	with open(outfile, 'w') as writeFile:
+	with open(outfile, 'a') as writeFile:
 		for value, counter, date in rows:
 			# Example: "18.74, Living Room, 2018-11-14'"
 			date_epoch = int((dt.datetime.strptime(date, "%Y-%m-%d") + dt.timedelta(1)).timestamp())
@@ -88,7 +88,7 @@ def get_multimeter(dbpath, dev_id, dev_name, query, outfile="./influx_data.csv")
 	t = (dev_id,)
 
 	rows = c.execute("SELECT Counter1,Counter2,Counter3,Counter4,Date FROM MultiMeter_Calendar WHERE DeviceRowID = ?", t)
-	with open(outfile, 'w') as writeFile:
+	with open(outfile, 'a') as writeFile:
 		for c1, c2, c3, c4, date in rows:
 			# Daily measurements of counters reflect the state at the end of day, 
 			# so we add one day to reflect the correct date for meter reading
@@ -109,7 +109,7 @@ def get_temperature(dbpath, dev_id, dev_name, query, outfile="./influx_data.csv"
 	t = (dev_id,)
 
 	rows = c.execute("SELECT Temp_Avg,SetPoint_Avg,Date FROM Temperature_Calendar WHERE DeviceRowID = ?", t)
-	with open(outfile, 'w') as writeFile:
+	with open(outfile, 'a') as writeFile:
 		for temp, setpoint, date in rows:
 			# Example: "18.74, Living Room, 2018-11-14'"
 			# Set date to midday local time by adding 12 hours
