@@ -5,9 +5,9 @@
 
 ### Settings
 # influxdb query strings
-METER_FORMAT="meter,device={dev_name},src=domoticz2influxdb value={value} counter={counter} {epoch_date:d}"
-MULTIMETER_FORMAT="multimeter,device={dev_name},src=domoticz2influxdb counter1={counter1} counter2={counter2} counter3={counter3} counter4={counter4} {epoch_date:d}"
-TEMPERATURE_FORMAT="temperature,type=heating,device={dev_name},subtype=actual,src=domoticz2influxdb temp={temp} setpoint={setpoint} {epoch_date:d}"
+METER_FORMAT="meter,device={dev_name},src=domoticz2influxdb value={value},counter={counter} {epoch_date:d}"
+MULTIMETER_FORMAT="multimeter,device={dev_name},src=domoticz2influxdb counter1={counter1},counter2={counter2},counter3={counter3},counter4={counter4} {epoch_date:d}"
+TEMPERATURE_FORMAT="temperature,type=heating,device={dev_name},subtype=actual,src=domoticz2influxdb temp={temp},setpoint={setpoint} {epoch_date:d}"
 
 ### Libraries
 import sqlite3
@@ -169,3 +169,4 @@ def main():
 if __name__ == "__main__":
 	main()
 	exit()
+
